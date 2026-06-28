@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WBBSE 5-10 English App</title>
+    
+    <!-- Modern Icons & Premium Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Supabase JS Client library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* Modern Color System & Global Variables */
+        :root {
+            --primary: #4f46e5;
+            /* Premium Indigo */
+            --primary-light: #818cf8;
+            --primary-dark: #3730a3;
+            --accent: #0d9488;
+            /* Teal highlight */
+            --bg-base: #f8fafc;
+            /* Slate background */
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            /* Dark charcoal */
+            --text-muted: #64748b;
+            /* Slate grey */
+            --border: #e2e8f0;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Sizing Scaling Utility */
+            --font-scale: 1;
+        }
+        
+        /* Reset & Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        h1,
+        h2,
+        h3,
+        h4,
+        .header span {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #0f172a;
+            /* Outer dark backdrop for mock devices */
+            overscroll-behavior: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-size: calc(16px * var(--font-scale));
+        }
+        
+        /* Standard App Frame (Perfect for both Mobile and Web Preview) */
+        #app-container {
+            width: 100%;
+            height: 100vh;
+            max-width: 480px;
+            /* Constrains look to a natural mobile device size on desktop */
+            background-color: var(--bg-base);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 0;
+        }
+        
+        @media (min-width: 481px) {
+            #app-container {
+                border-radius: var(--radius-lg);
+                height: 92vh;
+                max-height: 850px;
+                border: 6px solid #1e293b;
+            }
+        }
+        
+        /* Screen Management with Transitions */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            background-color: var(--bg-base);
+            z-index: 5;
+        }
+        
+        .screen.active {
+            display: flex;
+            animation: fadeInSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.99);
+            }
+            
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        /* Dynamic & Modern Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header i {
+            margin-right: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 4px;
+            border-radius: 50%;
+            transition: var(--transition-smooth);
+        }
+        
+        .header i:active {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Content Area Container */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Custom Scrollbars */
+        .content::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .content::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        
+        #pdf-screen .content {
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* --- SCREEN 1: Modern Splash Screen --- */
+        #splash-screen {
+            background: radial-gradient(circle at top right, var(--primary-light), var(--primary-dark));
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .splash-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: pulse-logo 2s infinite ease-in-out;
+        }
+        
+        .splash-circle {
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+            /* Organic morphing shape */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            animation: morph 8s infinite ease-in-out;
+        }
+        
+        .splash-circle i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #5eead4;
+            /* Teal accent */
+        }
+        
+        .splash-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            line-height: 1.2;
+            letter-spacing: 1px;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .splash-subtitle {
+            margin-top: 5px;
+            font-size: 13px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+        
+        .splash-hint {
+            position: absolute;
+            bottom: 40px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        @keyframes morph {
+            
+            0%,
+            100% {
+                border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+            }
+            
+            50% {
+                border-radius: 50% 50% 30% 70% / 50% 60% 40% 60%;
+            }
+        }
+        
+        @keyframes pulse-logo {
+            
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            
+            50% {
+                transform: scale(1.03);
+            }
+        }
+        
+        /* --- Welcome Banner (Home) --- */
+        .welcome-banner {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .welcome-banner::after {
+            content: '';
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            width: 100px;
+            height: 100px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.2;
+            filter: blur(20px);
+        }
+        
+        .welcome-banner h3 {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        
+        .welcome-banner p {
+            font-size: 12px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+        
+        /* --- Search Feature UI --- */
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-container input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-card);
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition-smooth);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .search-container input:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+        
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+        
+        /* --- SCREEN 2: Home (PREMIUM Class Cards) --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .class-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px 16px 16px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+            min-height: 145px;
+        }
+        
+        /* Premium Accent Themes for Classes 5 to 10 */
+        .class-card.c5 {
+            --accent-clr: #059669;
+            --accent-bg: #ecfdf5;
+        }
+        
+        .class-card.c6 {
+            --accent-clr: #0284c7;
+            --accent-bg: #f0f9ff;
+        }
+        
+        .class-card.c7 {
+            --accent-clr: #4f46e5;
+            --accent-bg: #e0e7ff;
+        }
+        
+        .class-card.c8 {
+            --accent-clr: #7c3aed;
+            --accent-bg: #f3e8ff;
+        }
+        
+        .class-card.c9 {
+            --accent-clr: #e11d48;
+            --accent-bg: #fff1f2;
+        }
+        
+        .class-card.c10 {
+            --accent-clr: #0d9488;
+            --accent-bg: #f0fdfa;
+        }
+        
+        .class-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-clr);
+            opacity: 0.8;
+            transition: var(--transition-smooth);
+        }
+        
+        .class-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-clr);
+        }
+        
+        .class-card:active {
+            transform: translateY(-1px);
+        }
+        
+        .class-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .class-roman {
+            font-size: 11px;
+            font-weight: 700;
+            background: var(--accent-bg);
+            color: var(--accent-clr);
+            padding: 3px 8px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+        
+        .class-book-icon {
+            font-size: 15px;
+            color: var(--accent-clr);
+            opacity: 0.8;
+        }
+        
+        .class-details {
+            margin-bottom: 14px;
+        }
+        
+        .class-name {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+        
+        .class-book {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .class-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        .class-footer span {
+            font-weight: 500;
+        }
+        
+        .class-footer i {
+            font-size: 10px;
+            color: var(--text-muted);
+            transition: var(--transition-smooth);
+        }
+        
+        .class-card:hover .class-footer i {
+            color: var(--accent-clr);
+            transform: translateX(3px);
+        }
+        
+        /* --- SCREEN 3: Modern Chapter List --- */
+        .chapter-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .chapter-list li {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition-smooth);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .chapter-list li:hover {
+            border-color: var(--primary-light);
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .chapter-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+        
+        .chapter-number {
+            width: 36px;
+            height: 36px;
+            background: #e0f2fe;
+            color: #0369a1;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .chapter-title-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+        
+        .chapter-arrow {
+            color: var(--text-muted);
+            font-size: 12px;
+            transition: var(--transition-smooth);
+        }
+        
+        .chapter-list li:hover .chapter-arrow {
+            color: var(--primary);
+            transform: translateX(2px);
+        }
+        
+        /* --- SCREEN 4: Local HTML Reader View (Pinch-to-Zoom Gestures Enabled) --- */
+        #reader-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #ffffff;
+            position: relative;
+        }
+        
+        #reader-scroll-viewport {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            /* Becomes auto when zoomed */
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        #reader-zoom-wrapper {
+            width: 100%;
+            height: 100%;
+            transform-origin: top left;
+            transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        /* Iframes containing your separate HTML pages */
+        .reader-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+        }
+        
+        .reader-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px 24px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .reader-placeholder i {
+            font-size: 80px;
+            color: #4f46e5;
+            margin-bottom: 24px;
+            filter: drop-shadow(0 4px 6px rgba(79, 70, 229, 0.2));
+            animation: bounce-icon 2s infinite ease-in-out;
+        }
+        
+        .reader-placeholder h2 {
+            font-size: 20px;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+        
+        .reader-placeholder p {
+            font-size: 14px;
+            max-width: 280px;
+            line-height: 1.5;
+        }
+        
+        @keyframes bounce-icon {
+            
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* --- Hamburger Menu Sidebar (Modern Draw) --- */
+        #sidebar {
+            position: absolute;
+            top: 0;
+            left: -290px;
+            width: 290px;
+            height: 100%;
+            background: var(--bg-card);
+            z-index: 1000;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            border-top-right-radius: var(--radius-lg);
+            border-bottom-right-radius: var(--radius-lg);
+            transform: translateX(0);
+        }
+        
+        #sidebar.open {
+            transform: translateX(290px);
+        }
+        
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 40px 24px 24px 24px;
+            position: relative;
+        }
+        
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        
+        .sidebar-avatar {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+        }
+        
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 15px 10px;
+        }
+        
+        .sidebar-menu li {
+            padding: 14px 16px;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            transition: var(--transition-smooth);
+            margin-bottom: 4px;
+        }
+        
+        .sidebar-menu li:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+        
+        .sidebar-menu li i {
+            width: 28px;
+            color: var(--text-muted);
+            font-size: 16px;
+            transition: var(--transition-smooth);
+        }
+        
+        .sidebar-menu li:hover i {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            display: none;
+            animation: fadeOverlay 0.3s ease;
+        }
+        
+        @keyframes fadeOverlay {
+            from {
+                opacity: 0;
+            }
+            
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* --- Dynamic Modal Sheets --- */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+            animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        .modal-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border: 1px solid var(--border);
+        }
+        
+        .modal-overlay.active .modal-card {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+            }
+            
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .modal-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #f1f5f9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+        }
+        
+        .modal-close-btn:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .modal-title i {
+            color: var(--primary);
+        }
+        
+        .modal-body {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        /* Modal Forms & Interactive Inputs */
+        .modal-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .modal-form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .modal-input,
+        .modal-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: #f8fafc;
+            font-size: 13.5px;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+        
+        .modal-input:focus,
+        .modal-textarea:focus {
+            border-color: var(--primary-light);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+        }
+        
+        .modal-btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .modal-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Sizing Setting Switches */
+        .setting-pills {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: var(--radius-sm);
+            gap: 4px;
+            margin-top: 6px;
+        }
+        
+        .setting-pill {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: var(--transition-smooth);
+            background: transparent;
+            border: none;
+        }
+        
+        .setting-pill.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="app-container">
+        
+        <!-- Screen 1: Splash Screen -->
+        <div id="splash-screen" class="screen active">
+            <div class="splash-logo-container">
+                <div class="splash-circle">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div class="splash-title">WBBSE</div>
+                    <div class="splash-subtitle">ENGLISH</div>
+                </div>
+            </div>
+            <div class="splash-hint">Class 5 to 10</div>
+        </div>
+        
+        <!-- Screen 2: Home (Class Selector) -->
+        <div id="home-screen" class="screen">
+            <div class="header">
+                <i class="fas fa-bars" onclick="toggleMenu()" aria-label="Open navigation menu"></i>
+                <span>WBBSE English</span>
+            </div>
+            <div class="content">
+                <!-- Welcome Banner -->
+                <div class="welcome-banner">
+                    <h3>Hello, Student! 👋</h3>
+                    <p>Select your class below to access standard English study solutions and texts instantly.</p>
+                </div>
+                
+                <!-- Live Search Bar -->
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="class-search" placeholder="Search class..." onkeyup="filterClasses()">
+                </div>
+                
+                <div class="grid-container" id="class-grid">
+                    <!-- Class 5 Card -->
+                    <div class="class-card c5" data-class="Class 5" onclick="openClass('Class 5')">
+                        <div class="class-card-header">
+                            <span class="class-roman">CLASS V</span>
+                            <i class="fas fa-book-open class-book-icon"></i>
+                        </div>
+                        <div class="class-details">
+                            <div class="class-name">English</div>
+                            <div class="class-book"><i class="fa-regular fa-bookmark"></i> Butterfly</div>
+                        </div>
+                        <div class="class-footer">
+                            <span>13 Chapters</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Class 6 Card -->
+                    <div class="class-card c6" data-class="Class 6" onclick="openClass('Class 6')">
+                        <div class="class-card-header">
+                            <span class="class-roman">CLASS VI</span>
+                            <i class="fas fa-book-open class-book-icon"></i>
+                        </div>
+                        <div class="class-details">
+                            <div class="class-name">English</div>
+                            <div class="class-book"><i class="fa-regular fa-bookmark"></i> Blossoms</div>
+                        </div>
+                        <div class="class-footer">
+                            <span>13 Chapters</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Class 7 Card -->
+                    <div class="class-card c7" data-class="Class 7" onclick="openClass('Class 7')">
+                        <div class="class-card-header">
+                            <span class="class-roman">CLASS VII</span>
+                            <i class="fas fa-book-open class-book-icon"></i>
+                        </div>
+                        <div class="class-details">
+                            <div class="class-name">English</div>
+                            <div class="class-book"><i class="fa-regular fa-bookmark"></i> Blossoms</div>
+                        </div>
+                        <div class="class-footer">
+                            <span>14 Chapters</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Class 8 Card -->
+                    <div class="class-card c8" data-class="Class 8" onclick="openClass('Class 8')">
+                        <div class="class-card-header">
+                            <span class="class-roman">CLASS VIII</span>
+                            <i class="fas fa-book-open class-book-icon"></i>
+                        </div>
+                        <div class="class-details">
+                            <div class="class-name">English</div>
+                            <div class="class-book"><i class="fa-regular fa-bookmark"></i> Blossoms</div>
+                        </div>
+                        <div class="class-footer">
+                            <span>14 Chapters</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Class 9 Card -->
+                    <div class="class-card c9" data-class="Class 9" onclick="openClass('Class 9')">
+                        <div class="class-card-header">
+                            <span class="class-roman">CLASS IX</span>
+                            <i class="fas fa-book-open class-book-icon"></i>
+                        </div>
+                        <div class="class-details">
+                            <div class="class-name">English</div>
+                            <div class="class-book"><i class="fa-regular fa-bookmark"></i> Bliss</div>
+                        </div>
+                        <div class="class-footer">
+                            <span>13 Chapters</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Class 10 Card -->
+                    <div class="class-card c10" data-class="Class 10" onclick="openClass('Class 10')">
+                        <div class="class-card-header">
+                            <span class="class-roman">CLASS X</span>
+                            <i class="fas fa-book-open class-book-icon"></i>
+                        </div>
+                        <div class="class-details">
+                            <div class="class-name">English</div>
+                            <div class="class-book"><i class="fa-regular fa-bookmark"></i> Bliss</div>
+                        </div>
+                        <div class="class-footer">
+                            <span>9 Chapters</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 3: Chapter List -->
+        <div id="chapter-screen" class="screen">
+            <div class="header">
+                <!-- Links arrow to history sequence -->
+                <i class="fas fa-arrow-left" onclick="history.back()"></i>
+                <span id="class-title">Class X ENGLISH</span>
+            </div>
+            <div class="content">
+                <!-- Live Chapter Search -->
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="chapter-search" placeholder="Search chapters..." onkeyup="filterChapters()">
+                </div>
+                <ul class="chapter-list" id="dynamic-chapter-list"></ul>
+            </div>
+        </div>
+        
+        <!-- Screen 4: Local HTML Reader View -->
+        <div id="pdf-screen" class="screen">
+            <div class="header">
+                <!-- Links arrow to history sequence -->
+                <i class="fas fa-arrow-left" onclick="history.back()"></i>
+                <span id="chapter-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 75%;">1 CHAPTER NAME</span>
+            </div>
+            
+            <div class="content" style="position: relative;">
+                <div id="reader-container">
+                    <div id="reader-scroll-viewport">
+                        <div id="reader-zoom-wrapper"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- App Overlays -->
+        <div id="overlay" onclick="toggleMenu()"></div>
+        
+        <!-- Navigation Drawer/Sidebar -->
+        <div id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-user">
+                    <div class="sidebar-avatar">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div>
+                        <h2>WBBSE English</h2>
+                        <p>Class Solutions (5-10)</p>
+                    </div>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li onclick="navigateTo('home-screen')"><i class="fas fa-home"></i> Home</li>
+                <li onclick="openModal('feedback')"><i class="fas fa-comment-dots"></i> Feedback</li>
+                <li onclick="openModal('rate')"><i class="fas fa-star"></i> Rate our app</li>
+                <li onclick="openModal('settings')"><i class="fas fa-cog"></i> Settings</li>
+                <li onclick="openModal('about')"><i class="fas fa-info-circle"></i> About us</li>
+                <li onclick="openModal('privacy')"><i class="fas fa-shield-alt"></i> Privacy policy</li>
+            </ul>
+        </div>
+        
+        <!-- Dynamic Modal Base Component -->
+        <div id="custom-modal" class="modal-overlay" onclick="closeModalOnOuterClick(event)">
+            <div class="modal-card">
+                <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                <div id="modal-content-area"></div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script>
+        // --- DATABASE CONNECTION CONFIGURATION ---
+        const SUPABASE_URL = "https://kochenhqnltibmgtwfwt.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvY2hlbmhxbmx0aWJtZ3R3Znd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzMyNTQsImV4cCI6MjA5ODE0OTI1NH0.xPyOYhrf1sab1plb8xosPz_3yuGtsCPc5Ny1Ii36Q2I";
+        
+        let supabaseClient = null;
+        if (typeof supabase !== 'undefined' && SUPABASE_URL !== "YOUR_SUPABASE_URL") {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+        
+        // --- 1. SPLASH SCREEN TIMEOUT WITH BASE INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Replaces the starting layout item in history with 'home-screen' state. 
+            // This prevents pressing back on home from navigating back to the splash screen.
+            history.replaceState({ screen: 'home-screen', context: {} }, '', '');
+            
+            setTimeout(() => {
+                navigateTo('home-screen', false);
+            }, 2500);
+        });
+        
+        // --- 2. COMPLETE CLASS SYLLABUS DATA ---
+        const syllabusData = {
+            'Class 5': [
+                { isRevision: true, title: 'Revision Lesson', html: 'chapters/class5/revision.html' },
+                { isRevision: false, num: 1, title: 'Gandhi: The Mahatma', html: 'chapters/class5/lesson1.html' },
+                { isRevision: false, num: 2, title: 'A Feat on Feet', html: 'chapters/class5/lesson2.html' },
+                { isRevision: false, num: 3, title: 'Phulmani\'s India', html: 'chapters/class5/lesson3.html' },
+                { isRevision: false, num: 4, title: 'Memory in Marble', html: 'chapters/class5/lesson4.html' },
+                { isRevision: false, num: 5, title: 'My School Days', html: 'chapters/class5/lesson5.html' },
+                { isRevision: false, num: 6, title: 'The Clever Monkey', html: 'chapters/class5/lesson6.html' },
+                { isRevision: false, num: 7, title: 'The Rebel Poet', html: 'chapters/class5/lesson7.html' },
+                { isRevision: false, num: 8, title: 'Buildings to Remember', html: 'chapters/class5/lesson8.html' },
+                { isRevision: false, num: 9, title: 'The Bird\'s Eye', html: 'chapters/class5/lesson9.html' },
+                { isRevision: false, num: 10, title: 'A Great Social Reformer', html: 'chapters/class5/lesson10.html' },
+                { isRevision: false, num: 11, title: 'The Finishing Point', html: 'chapters/class5/lesson11.html' },
+                { isRevision: false, num: 12, title: 'Beyond Barriers', html: 'chapters/class5/lesson12.html' }
+            ],
+            'Class 6': [
+                { isRevision: true, title: 'Revision Lesson', html: 'chapters/class6/revision.html' },
+                { isRevision: false, num: 1, title: 'It All Began With Drip-Drip', html: 'chapters/class6/lesson1.html' },
+                { isRevision: false, num: 2, title: 'The Adventurous Clown', html: 'chapters/class6/lesson2.html' },
+                { isRevision: false, num: 3, title: 'The Rainbow', html: 'chapters/class6/lesson3.html' },
+                { isRevision: false, num: 4, title: 'The Shop That Never Was', html: 'chapters/class6/lesson4.html' },
+                { isRevision: false, num: 5, title: 'Land of the Pharaohs', html: 'chapters/class6/lesson5.html' },
+                { isRevision: false, num: 6, title: 'How The Little Kite Learned to Fly', html: 'chapters/class6/lesson6.html' },
+                { isRevision: false, num: 7, title: 'The Magic Fish Bone', html: 'chapters/class6/lesson7.html' },
+                { isRevision: false, num: 8, title: 'Goodbye to the Moon', html: 'chapters/class6/lesson8.html' },
+                { isRevision: false, num: 9, title: 'I Will Go With My Father A-ploughing', html: 'chapters/class6/lesson9.html' },
+                { isRevision: false, num: 10, title: 'Smart Ice Cream', html: 'chapters/class6/lesson10.html' },
+                { isRevision: false, num: 11, title: 'The Blind Boy', html: 'chapters/class6/lesson11.html' },
+                { isRevision: false, num: 12, title: 'Rip Van Winkle', html: 'chapters/class6/lesson12.html' }
+            ],
+            'Class 7': [
+                { isRevision: true, title: 'Revision Lesson', html: 'chapters/class7/revision.html' },
+                { isRevision: false, num: 1, title: 'The Book of Nature', html: 'chapters/class7/lesson1.html' },
+                { isRevision: false, num: 2, title: 'The Riddle', html: 'chapters/class7/lesson2.html' },
+                { isRevision: false, num: 3, title: 'We are Seven', html: 'chapters/class7/lesson3.html' },
+                { isRevision: false, num: 4, title: 'The Beauty and the Beast', html: 'chapters/class7/lesson4.html' },
+                { isRevision: false, num: 5, title: 'Uncle Podger Hangs a Picture', html: 'chapters/class7/lesson5.html' },
+                { isRevision: false, num: 6, title: 'The Vagabond', html: 'chapters/class7/lesson6.html' },
+                { isRevision: false, num: 7, title: 'Mowgli Among the Wolves', html: 'chapters/class7/lesson7.html' },
+                { isRevision: false, num: 8, title: 'The Story of Proserpine', html: 'chapters/class7/lesson8.html' },
+                { isRevision: false, num: 9, title: 'J.C. Bose: A Beautiful Mind', html: 'chapters/class7/lesson9.html' },
+                { isRevision: false, num: 10, title: 'The Echoing Green', html: 'chapters/class7/lesson10.html' },
+                { isRevision: false, num: 11, title: 'The Axe', html: 'chapters/class7/lesson11.html' },
+                { isRevision: false, num: 12, title: 'My Diary', html: 'chapters/class7/lesson12.html' },
+                { isRevision: false, num: 13, title: 'Ghosts on the Verandah', html: 'chapters/class7/lesson13.html' }
+            ],
+            'Class 8': [
+                { isRevision: true, title: 'Revision Lesson', html: 'chapters/class8/revision.html' },
+                { isRevision: false, num: 1, title: 'The Wind Cap', html: 'chapters/class8/lesson1.html' },
+                { isRevision: false, num: 2, title: 'Clouds', html: 'chapters/class8/lesson2.html' },
+                { isRevision: false, num: 3, title: 'An April Day', html: 'chapters/class8/lesson3.html' },
+                { isRevision: false, num: 4, title: 'The Great Escape', html: 'chapters/class8/lesson4.html' },
+                { isRevision: false, num: 5, title: 'Princess September', html: 'chapters/class8/lesson5.html' },
+                { isRevision: false, num: 6, title: 'The Sea', html: 'chapters/class8/lesson6.html' },
+                { isRevision: false, num: 7, title: 'A King\'s Tale', html: 'chapters/class8/lesson7.html' },
+                { isRevision: false, num: 8, title: 'The Happy Prince', html: 'chapters/class8/lesson8.html' },
+                { isRevision: false, num: 9, title: 'Summer Friends', html: 'chapters/class8/lesson9.html' },
+                { isRevision: false, num: 10, title: 'Tales of Childhood', html: 'chapters/class8/lesson10.html' },
+                { isRevision: false, num: 11, title: 'Midnight Express', html: 'chapters/class8/lesson11.html' },
+                { isRevision: false, num: 12, title: 'Someone', html: 'chapters/class8/lesson12.html' },
+                { isRevision: false, num: 13, title: 'The Man Who Planted Trees', html: 'chapters/class8/lesson13.html' }
+            ],
+            'Class 9': [
+                
+                { isRevision: false, num: 1, title: 'Tales of Bhola Grandpa — Manoj Das', html: 'chapters/class9/lesson1.html' },
+                { isRevision: false, num: 2, title: 'All about a Dog — A.G. Gardiner', html: 'chapters/class9/lesson2.html' },
+                { isRevision: false, num: 3, title: 'Autumn — John Clare', html: 'chapters/class9/lesson3.html' },
+                { isRevision: false, num: 4, title: 'A Day in the Zoo — Gerald Durrell', html: 'chapters/class9/lesson4.html' },
+                { isRevision: false, num: 5, title: 'All Summer in a Day — Ray Bradbury', html: 'chapters/class9/lesson5.html' },
+                { isRevision: false, num: 6, title: 'Mild the Mist upon the Hill — Emily Brontë', html: 'chapters/class9/lesson6.html' },
+                { isRevision: false, num: 7, title: 'Tom Loses a Tooth — Mark Twain', html: 'chapters/class9/lesson7.html' },
+                { isRevision: false, num: 8, title: 'His First Flight — Liam O\'Flaherty', html: 'chapters/class9/lesson8.html' },
+                { isRevision: false, num: 9, title: 'The North Ship — Philip Larkin', html: 'chapters/class9/lesson9.html' },
+                { isRevision: false, num: 10, title: 'The Price of Bananas — Mulk Raj Anand', html: 'chapters/class9/lesson10.html' },
+                { isRevision: false, num: 11, title: 'A Shipwrecked Sailor — Daniel Defoe', html: 'chapters/class9/lesson11.html' },
+                { isRevision: false, num: 12, title: 'Hunting Snake — Judith Wright', html: 'chapters/class9/lesson12.html' },
+                { isRevision: true, title: 'Reading Comprehension', html: 'chapters/class9/revision.html' },
+            ],
+            'Class 10': [
+    
+                { isRevision: false, num: 1, title: 'Father\'s Help (R. K. Narayan)', html: 'chapters/class10/lesson1.html' },
+                { isRevision: false, num: 2, title: 'Fable (Ralph Waldo Emerson)', html: 'chapters/class10/lesson2.html' },
+                { isRevision: false, num: 3, title: 'The Passing Away of Bapu (Nayantara Sehgal)', html: 'chapters/class10/lesson3.html' },
+                { isRevision: false, num: 4, title: 'My Own True Family (Ted Hughes)', html: 'chapters/class10/lesson4.html' },
+                { isRevision: false, num: 5, title: 'Our Runaway Kite (Lucy Maud Montgomery)', html: 'chapters/class10/lesson5.html' },
+                { isRevision: false, num: 6, title: 'Sea Fever (John Masefield)', html: 'chapters/class10/lesson6.html' },
+                { isRevision: false, num: 7, title: 'The Cat (Andrew Barton Paterson)', html: 'chapters/class10/lesson7.html' },
+                { isRevision: false, num: 8, title: 'The Snail (William Cowper)', html: 'chapters/class10/lesson8.html' }
+            ]
+        };
+        
+        // Global Trackers
+        let currentOpenClass = '';
+        let selectedFontSize = 'medium';
+        let currentZoom = 1.0;
+        
+        // --- 3. DYNAMIC APP HISTORY NAVIGATION ROUTING ---
+        function navigateTo(screenId, pushToHistory = true, context = {}) {
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => screen.classList.remove('active'));
+            
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            }
+            
+            // Handles view reconstruction from state data during back actions
+            if (screenId === 'chapter-screen' && context.className) {
+                currentOpenClass = context.className;
+                document.getElementById('class-title').innerText = context.className.toUpperCase() + ' ENGLISH';
+                populateChapterList(context.className);
+            } else if (screenId === 'pdf-screen' && context.chapterData && context.badgeText) {
+                populateReaderView(context.badgeText, context.chapterData);
+            }
+            
+            // Clear searches during navigations
+            if (screenId === 'home-screen') {
+                document.getElementById('class-search').value = '';
+                filterClasses();
+            } else if (screenId === 'chapter-screen') {
+                document.getElementById('chapter-search').value = '';
+                filterChapters();
+            }
+            closeMenu();
+            
+            // Store history states
+            if (pushToHistory) {
+                history.pushState({ screen: screenId, context: context }, '', '');
+            }
+        }
+        
+        // Native physical system back gesture handling mapping
+        window.addEventListener('popstate', (event) => {
+            if (event.state && event.state.screen) {
+                navigateTo(event.state.screen, false, event.state.context);
+            } else {
+                navigateTo('home-screen', false);
+            }
+        });
+        
+        // --- 4. LIST GENERATION INTERFACES ---
+        function openClass(className) {
+            navigateTo('chapter-screen', true, { className: className });
+        }
+        
+        function populateChapterList(className) {
+            const chapterListUl = document.getElementById('dynamic-chapter-list');
+            chapterListUl.innerHTML = '';
+            
+            const chapters = syllabusData[className] || [];
+            
+            chapters.forEach((chapterData) => {
+                const li = document.createElement('li');
+                const badgeText = chapterData.isRevision ? 'R' : chapterData.num;
+                
+                li.onclick = () => openChapter(badgeText, chapterData);
+                
+                li.innerHTML = `
+                    <div class="chapter-left">
+                        <div class="chapter-number">${badgeText}</div> 
+                        <span class="chapter-title-text">${chapterData.title}</span>
+                    </div>
+                    <i class="fas fa-chevron-right chapter-arrow"></i>
+                `;
+                
+                chapterListUl.appendChild(li);
+            });
+        }
+        
+        // --- 5. INTERACTIVE LOCAL HTML LOADING & ZOOM ---
+        function openChapter(badgeText, chapterData) {
+            navigateTo('pdf-screen', true, { badgeText: badgeText, chapterData: chapterData });
+        }
+        
+        function populateReaderView(badgeText, chapterData) {
+            const headingPrefix = (badgeText === 'R') ? 'Revision Lesson' : `Lesson ${badgeText}`;
+            document.getElementById('chapter-title').innerText = `${headingPrefix}: ${chapterData.title}`;
+            
+            const zoomWrapper = document.getElementById('reader-zoom-wrapper');
+            
+            // Clear zoom status back to 1.0 default
+            resetZoomState();
+            
+            if (chapterData.html && chapterData.html.trim() !== '') {
+                // Instantiates a native safe relative iframe object
+                zoomWrapper.innerHTML = `
+                    <iframe 
+                        id="reader-frame"
+                        src="${chapterData.html}" 
+                        class="reader-iframe"
+                        allow="autoplay">
+                    </iframe>
+                `;
+                
+                // Mount internal touch listeners inside the iframe
+                const iframe = document.getElementById('reader-frame');
+                initIframeZoom(iframe);
+            } else {
+                zoomWrapper.innerHTML = `
+                    <div class="reader-placeholder">
+                        <i class="fas fa-file-signature"></i>
+                        <h2>Lesson File Not Found</h2>
+                        <p>The local document file for "${chapterData.title}" has not been created yet.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // --- 5a. SYSTEM TO CAPTURE GESTURES INSIDE SAME-ORIGIN FRAMES ---
+        function initIframeZoom(iframeElement) {
+            iframeElement.onload = function() {
+                try {
+                    // Grab document flow inside our same-origin relative chapter file
+                    const doc = iframeElement.contentDocument || iframeElement.contentWindow.document;
+                    if (!doc) return;
+                    
+                    let initialDistance = 0;
+                    let initialZoom = 1.0;
+                    let isPanning = false;
+                    let startX = 0;
+                    let startY = 0;
+                    let scrollLeftStart = 0;
+                    let scrollTopStart = 0;
+                    
+                    // Touch gestures for mobile screens
+                    doc.addEventListener('touchstart', function(e) {
+                        if (e.touches.length === 2) {
+                            // Two-finger pinch detected
+                            initialDistance = Math.hypot(
+                                e.touches[0].clientX - e.touches[1].clientX,
+                                e.touches[0].clientY - e.touches[1].clientY
+                            );
+                            initialZoom = currentZoom;
+                        } else if (e.touches.length === 1 && currentZoom > 1.0) {
+                            // Single-finger drag behavior when zoomed in
+                            isPanning = true;
+                            startX = e.touches[0].clientX;
+                            startY = e.touches[0].clientY;
+                            const viewport = document.getElementById('reader-scroll-viewport');
+                            scrollLeftStart = viewport.scrollLeft;
+                            scrollTopStart = viewport.scrollTop;
+                        }
+                    }, { passive: false });
+                    
+                    doc.addEventListener('touchmove', function(e) {
+                        if (e.touches.length === 2) {
+                            e.preventDefault(); // Stop entire outer page scaling
+                            
+                            const newDistance = Math.hypot(
+                                e.touches[0].clientX - e.touches[1].clientX,
+                                e.touches[0].clientY - e.touches[1].clientY
+                            );
+                            const factor = newDistance / initialDistance;
+                            
+                            currentZoom = Math.max(1.0, Math.min(3.0, initialZoom * factor));
+                            applyPinchZoom(currentZoom);
+                        } else if (e.touches.length === 1 && isPanning && currentZoom > 1.0) {
+                            // Pan scroll viewport matching finger drag
+                            const dx = e.touches[0].clientX - startX;
+                            const dy = e.touches[0].clientY - startY;
+                            const viewport = document.getElementById('reader-scroll-viewport');
+                            viewport.scrollLeft = scrollLeftStart - dx;
+                            viewport.scrollTop = scrollTopStart - dy;
+                        }
+                    }, { passive: false });
+                    
+                    doc.addEventListener('touchend', function(e) {
+                        if (e.touches.length < 2) {
+                            initialDistance = 0;
+                        }
+                        if (e.touches.length === 0) {
+                            isPanning = false;
+                        }
+                    }, { passive: false });
+                    
+                    // Laptop/Desktop trackpad pinching support (Ctrl + Scroll Wheel)
+                    doc.addEventListener('wheel', function(e) {
+                        if (e.ctrlKey) {
+                            e.preventDefault();
+                            const zoomFactor = 0.05;
+                            const delta = e.deltaY < 0 ? 1 : -1;
+                            currentZoom = Math.max(1.0, Math.min(3.0, currentZoom + (delta * zoomFactor)));
+                            applyPinchZoom(currentZoom);
+                        }
+                    }, { passive: false });
+                    
+                } catch (err) {
+                    console.error("Local same-origin configuration error:", err);
+                }
+            };
+        }
+        
+        // Resets document scaling dimensions back to raw state
+        function resetZoomState() {
+            currentZoom = 1.0;
+            const wrapper = document.getElementById('reader-zoom-wrapper');
+            const viewport = document.getElementById('reader-scroll-viewport');
+            
+            if (wrapper) {
+                wrapper.style.transform = `scale(1)`;
+                wrapper.style.width = '100%';
+                wrapper.style.height = '100%';
+                wrapper.style.marginRight = '0px';
+                wrapper.style.marginBottom = '0px';
+            }
+            if (viewport) {
+                viewport.style.overflow = 'hidden';
+                viewport.scrollLeft = 0;
+                viewport.scrollTop = 0;
+            }
+        }
+        
+        // Programmatic CSS layout scaling. Creates comfortable scroll space dynamically.
+        function applyPinchZoom(zoom) {
+            const wrapper = document.getElementById('reader-zoom-wrapper');
+            const viewport = document.getElementById('reader-scroll-viewport');
+            
+            wrapper.style.transform = `scale(${zoom})`;
+            
+            if (zoom > 1.0) {
+                // Margin buffers extend the virtual canvas to accommodate high zoom depths beautifully
+                wrapper.style.width = '100%';
+                wrapper.style.height = '100%';
+                wrapper.style.marginRight = `${(zoom - 1) * 100}%`;
+                wrapper.style.marginBottom = `${(zoom - 1) * 100}%`;
+                viewport.style.overflow = 'auto';
+            } else {
+                wrapper.style.width = '100%';
+                wrapper.style.height = '100%';
+                wrapper.style.marginRight = '0px';
+                wrapper.style.marginBottom = '0px';
+                viewport.style.overflow = 'hidden';
+                viewport.scrollLeft = 0;
+                viewport.scrollTop = 0;
+            }
+        }
+        
+        // --- 6. SIDEBAR DRAWER CONTROLS ---
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.style.display = 'none';
+            } else {
+                sidebar.classList.add('open');
+                overlay.style.display = 'block';
+            }
+        }
+        
+        function closeMenu() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('overlay').style.display = 'none';
+        }
+        
+        // --- 7. LIVE INTERACTIVE SEARCH FILTERS ---
+        function filterClasses() {
+            const query = document.getElementById('class-search').value.toLowerCase();
+            const cards = document.querySelectorAll('.class-card');
+            
+            cards.forEach(card => {
+                const className = card.getAttribute('data-class').toLowerCase();
+                if (className.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        function filterChapters() {
+            const query = document.getElementById('chapter-search').value.toLowerCase();
+            const items = document.querySelectorAll('#dynamic-chapter-list li');
+            
+            items.forEach(item => {
+                const titleText = item.querySelector('.chapter-title-text').innerText.toLowerCase();
+                if (titleText.includes(query)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        // --- 8. DYNAMIC SIDEMENU ACTIONS & MODALS ---
+        function openModal(type) {
+            closeMenu();
+            const modal = document.getElementById('custom-modal');
+            const contentArea = document.getElementById('modal-content-area');
+            let contentHTML = '';
+            
+            switch (type) {
+                case 'feedback':
+                    contentHTML = `
+                        <div class="modal-title">
+                            <i class="fas fa-comment-dots"></i> Send Feedback
+                        </div>
+                        <div class="modal-body" id="feedback-body">
+                            <p style="margin-bottom: 12px;">We'd love to hear your suggestions or correct potential errors. Send us your feedback below:</p>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div class="modal-form-group">
+                                    <label>Your Name</label>
+                                    <input type="text" id="fb-name" class="modal-input" placeholder="Enter your name">
+                                </div>
+                                <div class="modal-form-group">
+                                    <label>Email Address</label>
+                                    <input type="email" id="fb-email" class="modal-input" placeholder="student@example.com">
+                                </div>
+                                <div class="modal-form-group">
+                                    <label>Your Message</label>
+                                    <textarea id="fb-text" rows="4" class="modal-textarea" placeholder="Type your suggestion here..."></textarea>
+                                </div>
+                                <button class="modal-btn" id="fb-submit-btn" onclick="submitFeedback()">Submit Feedback</button>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'rate':
+                    contentHTML = `
+    <div class="modal-title">
+        <i class="fas fa-star" style="color: #ffca28;"></i> Rate Our App
+    </div>
+    <div class="modal-body" id="rate-body" style="text-align: center;">
+        <p style="margin-bottom: 8px;">Are you enjoying this offline syllabus solution? Help other West Bengal students by rating us!</p>
+        <div class="rating-stars" style="display: flex; justify-content: center; gap: 8px; margin-bottom: 12px;">
+            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" onclick="let s=this.parentNode.children; for(let i=0; i<s.length; i++) s[i].style.color = i < 1 ? '#ffca28' : '#ccc'; if(typeof setRating === 'function') setRating(1);" data-star="1"></i>
+            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" onclick="let s=this.parentNode.children; for(let i=0; i<s.length; i++) s[i].style.color = i < 2 ? '#ffca28' : '#ccc'; if(typeof setRating === 'function') setRating(2);" data-star="2"></i>
+            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" onclick="let s=this.parentNode.children; for(let i=0; i<s.length; i++) s[i].style.color = i < 3 ? '#ffca28' : '#ccc'; if(typeof setRating === 'function') setRating(3);" data-star="3"></i>
+            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" onclick="let s=this.parentNode.children; for(let i=0; i<s.length; i++) s[i].style.color = i < 4 ? '#ffca28' : '#ccc'; if(typeof setRating === 'function') setRating(4);" data-star="4"></i>
+            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" onclick="let s=this.parentNode.children; for(let i=0; i<s.length; i++) s[i].style.color = i < 5 ? '#ffca28' : '#ccc'; if(typeof setRating === 'function') setRating(5);" data-star="5"></i>
+        </div>
+        <p id="rating-status" style="font-size: 12px; font-weight: 500; color: var(--accent); margin-bottom: 12px;">Tap to select stars</p>
+        <button class="modal-btn" style="width:100%" onclick="submitRating()">Submit Rating</button>
+    </div>
+`;
+                    break;
+                case 'settings':
+                    contentHTML = `
+                        <div class="modal-title">
+                            <i class="fas fa-cog"></i> Settings
+                        </div>
+                        <div class="modal-body">
+                            <div class="modal-form-group" style="margin-bottom: 16px;">
+                                <label>Text Reading Scale</label>
+                                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Adjust text size inside unit dashboards and indexes.</p>
+                                <div class="setting-pills">
+                                    <button class="setting-pill ${selectedFontSize === 'small' ? 'active' : ''}" onclick="updateFontSize('small', this)">Small</button>
+                                    <button class="setting-pill ${selectedFontSize === 'medium' ? 'active' : ''}" onclick="updateFontSize('medium', this)">Normal</button>
+                                    <button class="setting-pill ${selectedFontSize === 'large' ? 'active' : ''}" onclick="updateFontSize('large', this)">Large</button>
+                                </div>
+                            </div>
+                            <div style="border-top: 1px solid var(--border); padding-top: 12px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+                                    <span>Version Status</span>
+                                    <span style="background:#e2e8f0; padding:2px 6px; border-radius:10px; font-weight:600; font-size:10px;">v2.1.0-2026</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'about':
+                    contentHTML = `
+                        <div class="modal-title">
+                            <i class="fas fa-info-circle"></i> About Us
+                        </div>
+                        <div class="modal-body">
+                            <p style="margin-bottom: 12px;"><strong>WBBSE 5-10 English App</strong> is an educational platform crafted to assist students under the West Bengal Board of Secondary Education.</p>
+                            <p style="margin-bottom: 12px;">This lightweight application maps textbook indexes and curriculum pathways accurately, allowing easy integration with digital learning modules and documents.</p>
+                            <p>Our objective is to simplify study paths, providing modern reading layers and responsive chapter lookups.</p>
+                        </div>
+                    `;
+                    break;
+                case 'privacy':
+                    contentHTML = `
+                        <div class="modal-title">
+                            <i class="fas fa-shield-alt"></i> Privacy Policy
+                        </div>
+                        <div class="modal-body" style="font-size: 12.5px;">
+                            <p style="margin-bottom: 10px;"><strong>Last Updated: June 2026</strong></p>
+                            <p style="margin-bottom: 10px;">We take your data security seriously. This application does not gather, store, or sell personal student files or identifiable tracking metrics.</p>
+                            <p style="margin-bottom: 10px;">Any external textbook solutions or reference sheets are served as direct web interfaces via Google Drive previews or public endpoints, subject to normal network safety structures.</p>
+                            <p>All core settings, search terms, and class progression records are processed locally on your terminal device.</p>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            contentArea.innerHTML = contentHTML;
+            modal.classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('custom-modal').classList.remove('active');
+        }
+        
+        function closeModalOnOuterClick(e) {
+            if (e.target.id === 'custom-modal') {
+                closeModal();
+            }
+        }
+        
+        // Modal Interactive Subsystems
+        let currentRating = 0;
+        
+        function setRating(val) {
+            currentRating = val;
+            const stars = document.querySelectorAll('.rating-stars i');
+            stars.forEach((star, index) => {
+                if (index < val) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+            
+        }
+        
+        function submitRating() {
+            if (currentRating === 0) {
+                const status = document.getElementById('rating-status');
+                status.style.color = '#ef4444';
+                status.innerText = 'Please select a star rating first!';
+                return;
+            }
+            const body = document.getElementById('rate-body');
+            body.innerHTML = `
+                <div style="padding: 24px 0; text-align: center;">
+                    <i class="fas fa-check-circle" style="font-size: 50px; color: var(--accent); margin-bottom: 12px;"></i>
+                    <h3>Thank you!</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">Your submission has been captured.</p>
+                </div>
+            `;
+            setTimeout(closeModal, 2000);
+        }
+        
+        async function submitFeedback() {
+            const name = document.getElementById('fb-name').value;
+            const email = document.getElementById('fb-email').value;
+            const text = document.getElementById('fb-text').value;
+            const submitBtn = document.getElementById('fb-submit-btn');
+            
+            if (!name.trim()) {
+                alert('Please enter your name.');
+                return;
+            }
+            if (!text.trim()) {
+                alert('Please enter your feedback message.');
+                return;
+            }
+            
+            // Show loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'Sending...';
+            }
+            
+            let success = true;
+            
+            // Inserts row into database if the Supabase client is initialized
+            if (supabaseClient) {
+                try {
+                    const { error } = await supabaseClient
+                        .from('feedbacks')
+                        .insert([
+                            { name: name.trim(), email: email.trim(), message: text.trim() }
+                        ]);
+                    
+                    if (error) {
+                        console.error('Supabase write error:', error);
+                        alert('Could not record feedback: ' + error.message);
+                        success = false;
+                    }
+                } catch (err) {
+                    console.error('Database connection error:', err);
+                    alert('Network error. Unable to establish database connection.');
+                    success = false;
+                }
+            } else {
+                console.warn('Supabase database client is not configured. Feedbacks are not being recorded.');
+            }
+            
+            if (success) {
+                const body = document.getElementById('feedback-body');
+                body.innerHTML = `
+                    <div style="padding: 24px 0; text-align: center;">
+                        <i class="fas fa-paper-plane" style="font-size: 50px; color: var(--primary); margin-bottom: 12px;"></i>
+                        <h3>Feedback Sent!</h3>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">Thank you for helping us improve this learning resource.</p>
+                    </div>
+                `;
+                setTimeout(closeModal, 2200);
+            } else {
+                // Restore button on error
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Submit Feedback';
+                }
+            }
+        }
+        
+        function updateFontSize(size, btnElement) {
+            selectedFontSize = size;
+            const pills = document.querySelectorAll('.setting-pill');
+            pills.forEach(pill => pill.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            const root = document.documentElement;
+            if (size === 'small') {
+                root.style.setProperty('--font-scale', '0.9');
+            } else if (size === 'medium') {
+                root.style.setProperty('--font-scale', '1');
+            } else if (size === 'large') {
+                root.style.setProperty('--font-scale', '1.1');
+            }
+        }
+    </script>
+</body>
+
+</html>
