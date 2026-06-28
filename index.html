@@ -948,7 +948,8 @@
         <!-- Screen 2: Home (Class Selector) -->
         <div id="home-screen" class="screen">
             <div class="header">
-                <i class="fas fa-bars" onclick="toggleMenu()" aria-label="Open navigation menu"></i>
+                <i class="fas fa-bars" id="menu-toggle-btn" role="button" tabindex="0"
+                    aria-label="Open navigation menu"></i>
                 <span>WBBSE English</span>
             </div>
             <div class="content">
@@ -961,12 +962,12 @@
                 <!-- Live Search Bar -->
                 <div class="search-container">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="class-search" placeholder="Search class..." onkeyup="filterClasses()">
+                    <input type="text" id="class-search" placeholder="Search class...">
                 </div>
 
                 <div class="grid-container" id="class-grid">
                     <!-- Class 5 Card -->
-                    <div class="class-card c5" data-class="Class 5" onclick="openClass('Class 5')">
+                    <div class="class-card c5" data-class="Class 5" role="button" tabindex="0">
                         <div class="class-card-header">
                             <span class="class-roman">CLASS V</span>
                             <i class="fas fa-book-open class-book-icon"></i>
@@ -982,7 +983,7 @@
                     </div>
 
                     <!-- Class 6 Card -->
-                    <div class="class-card c6" data-class="Class 6" onclick="openClass('Class 6')">
+                    <div class="class-card c6" data-class="Class 6" role="button" tabindex="0">
                         <div class="class-card-header">
                             <span class="class-roman">CLASS VI</span>
                             <i class="fas fa-book-open class-book-icon"></i>
@@ -998,7 +999,7 @@
                     </div>
 
                     <!-- Class 7 Card -->
-                    <div class="class-card c7" data-class="Class 7" onclick="openClass('Class 7')">
+                    <div class="class-card c7" data-class="Class 7" role="button" tabindex="0">
                         <div class="class-card-header">
                             <span class="class-roman">CLASS VII</span>
                             <i class="fas fa-book-open class-book-icon"></i>
@@ -1014,7 +1015,7 @@
                     </div>
 
                     <!-- Class 8 Card -->
-                    <div class="class-card c8" data-class="Class 8" onclick="openClass('Class 8')">
+                    <div class="class-card c8" data-class="Class 8" role="button" tabindex="0">
                         <div class="class-card-header">
                             <span class="class-roman">CLASS VIII</span>
                             <i class="fas fa-book-open class-book-icon"></i>
@@ -1030,7 +1031,7 @@
                     </div>
 
                     <!-- Class 9 Card -->
-                    <div class="class-card c9" data-class="Class 9" onclick="openClass('Class 9')">
+                    <div class="class-card c9" data-class="Class 9" role="button" tabindex="0">
                         <div class="class-card-header">
                             <span class="class-roman">CLASS IX</span>
                             <i class="fas fa-book-open class-book-icon"></i>
@@ -1046,7 +1047,7 @@
                     </div>
 
                     <!-- Class 10 Card -->
-                    <div class="class-card c10" data-class="Class 10" onclick="openClass('Class 10')">
+                    <div class="class-card c10" data-class="Class 10" role="button" tabindex="0">
                         <div class="class-card-header">
                             <span class="class-roman">CLASS X</span>
                             <i class="fas fa-book-open class-book-icon"></i>
@@ -1068,14 +1069,14 @@
         <div id="chapter-screen" class="screen">
             <div class="header">
                 <!-- Links arrow to history sequence -->
-                <i class="fas fa-arrow-left" onclick="history.back()"></i>
+                <i class="fas fa-arrow-left back-btn" role="button" tabindex="0"></i>
                 <span id="class-title">Class X ENGLISH</span>
             </div>
             <div class="content">
                 <!-- Live Chapter Search -->
                 <div class="search-container">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="chapter-search" placeholder="Search chapters..." onkeyup="filterChapters()">
+                    <input type="text" id="chapter-search" placeholder="Search chapters...">
                 </div>
                 <ul class="chapter-list" id="dynamic-chapter-list"></ul>
             </div>
@@ -1085,7 +1086,7 @@
         <div id="pdf-screen" class="screen">
             <div class="header">
                 <!-- Links arrow to history sequence -->
-                <i class="fas fa-arrow-left" onclick="history.back()"></i>
+                <i class="fas fa-arrow-left back-btn" role="button" tabindex="0"></i>
                 <span id="chapter-title"
                     style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 75%;">1 CHAPTER
                     NAME</span>
@@ -1101,7 +1102,7 @@
         </div>
 
         <!-- App Overlays -->
-        <div id="overlay" onclick="toggleMenu()"></div>
+        <div id="overlay"></div>
 
         <!-- Navigation Drawer/Sidebar -->
         <div id="sidebar">
@@ -1117,19 +1118,25 @@
                 </div>
             </div>
             <ul class="sidebar-menu">
-                <li onclick="navigateTo('home-screen')"><i class="fas fa-home"></i> Home</li>
-                <li onclick="openModal('feedback')"><i class="fas fa-comment-dots"></i> Feedback</li>
-                <li onclick="openModal('rate')"><i class="fas fa-star"></i> Rate our app</li>
-                <li onclick="openModal('settings')"><i class="fas fa-cog"></i> Settings</li>
-                <li onclick="openModal('about')"><i class="fas fa-info-circle"></i> About us</li>
-                <li onclick="openPrivacyPolicy()"><i class="fas fa-shield-alt"></i> Privacy policy</li>
+                <li data-action="navigate" data-screen="home-screen" role="button" tabindex="0"><i
+                        class="fas fa-home"></i> Home</li>
+                <li data-action="modal" data-modal-type="feedback" role="button" tabindex="0"><i
+                        class="fas fa-comment-dots"></i> Feedback</li>
+                <li data-action="modal" data-modal-type="rate" role="button" tabindex="0"><i class="fas fa-star"></i>
+                    Rate our app</li>
+                <li data-action="modal" data-modal-type="settings" role="button" tabindex="0"><i class="fas fa-cog"></i>
+                    Settings</li>
+                <li data-action="modal" data-modal-type="about" role="button" tabindex="0"><i
+                        class="fas fa-info-circle"></i> About us</li>
+                <li data-action="privacy" role="button" tabindex="0"><i class="fas fa-shield-alt"></i> Privacy policy
+                </li>
             </ul>
         </div>
 
         <!-- Dynamic Modal Base Component -->
-        <div id="custom-modal" class="modal-overlay" onclick="closeModalOnOuterClick(event)">
+        <div id="custom-modal" class="modal-overlay">
             <div class="modal-card">
-                <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                <button class="modal-close-btn"><i class="fas fa-times"></i></button>
                 <div id="modal-content-area"></div>
             </div>
         </div>
@@ -1155,6 +1162,42 @@
             setTimeout(() => {
                 navigateTo('home-screen', false);
             }, 2500);
+
+            // --- CENTRALIZED EVENT LISTENERS ---
+            document.getElementById('menu-toggle-btn').addEventListener('click', toggleMenu);
+            document.getElementById('overlay').addEventListener('click', toggleMenu);
+
+            document.querySelectorAll('.back-btn').forEach(btn => {
+                btn.addEventListener('click', () => history.back());
+            });
+
+            document.getElementById('class-search').addEventListener('keyup', filterClasses);
+            document.getElementById('chapter-search').addEventListener('keyup', filterChapters);
+
+            document.getElementById('class-grid').addEventListener('click', (e) => {
+                const card = e.target.closest('.class-card');
+                if (card) {
+                    openClass(card.dataset.class);
+                }
+            });
+
+            document.getElementById('dynamic-chapter-list').addEventListener('click', (e) => {
+                const li = e.target.closest('li');
+                if (li && li.dataset.chapter) {
+                    const chapter = JSON.parse(li.dataset.chapter);
+                    const badgeText = li.dataset.badge;
+                    openChapter(badgeText, chapter);
+                }
+            });
+
+            document.querySelector('.sidebar-menu').addEventListener('click', handleSidebarAction);
+
+            const modal = document.getElementById('custom-modal');
+            modal.addEventListener('click', (e) => {
+                if (e.target.id === 'custom-modal' || e.target.closest('.modal-close-btn')) {
+                    closeModal();
+                }
+            });
         });
 
         // --- 2. COMPLETE CLASS SYLLABUS DATA ---
@@ -1314,7 +1357,10 @@
                 const li = document.createElement('li');
                 const badgeText = chapterData.isRevision ? 'R' : chapterData.num;
 
-                li.onclick = () => openChapter(badgeText, chapterData);
+                li.dataset.badge = badgeText;
+                li.dataset.chapter = JSON.stringify(chapterData); // Store data on the element
+                li.setAttribute('role', 'button');
+                li.setAttribute('tabindex', '0');
 
                 li.innerHTML = `
                     <div class="chapter-left">
@@ -1543,6 +1589,25 @@
             });
         }
 
+        function handleSidebarAction(e) {
+            const target = e.target.closest('li');
+            if (!target) return;
+
+            const action = target.dataset.action;
+            if (action === 'navigate') {
+                navigateTo(target.dataset.screen);
+            } else if (action === 'modal') {
+                openModal(target.dataset.modalType);
+            } else if (action === 'privacy') {
+                openPrivacyPolicy();
+            }
+        }
+
+        document.getElementById('modal-content-area').addEventListener('click', (e) => {
+            if (e.target.id === 'fb-submit-btn') submitFeedback();
+            if (e.target.closest('.rating-stars')) setRating(e.target.dataset.star);
+        });
+
         // --- 8. DYNAMIC SIDEMENU ACTIONS & MODALS ---
         function openPrivacyPolicy() {
             closeMenu();
@@ -1576,7 +1641,7 @@
                                     <label>Your Message</label>
                                     <textarea id="fb-text" rows="4" class="modal-textarea" placeholder="Type your suggestion here..."></textarea>
                                 </div>
-                                <button class="modal-btn" id="fb-submit-btn" onclick="submitFeedback()">Submit Feedback</button>
+                                <button class="modal-btn" id="fb-submit-btn">Submit Feedback</button>
                             </div>
                         </div>
                     `;
@@ -1589,14 +1654,14 @@
     <div class="modal-body" id="rate-body" style="text-align: center;">
         <p style="margin-bottom: 8px;">Are you enjoying this offline syllabus solution? Help other West Bengal students by rating us!</p>
         <div class="rating-stars" style="display: flex; justify-content: center; gap: 8px; margin-bottom: 12px;">
-            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" onclick="let s=this.parentNode.children; for(let i=0; i<s.length; i++) s[i].style.color = i < 1 ? '#ffca28' : '#ccc'; if(typeof setRating === 'function') setRating(1);" data-star="1"></i>
-            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" onclick="let s=this.parentNode.children; for(let i=0; i<s.length; i++) s[i].style.color = i < 2 ? '#ffca28' : '#ccc'; if(typeof setRating === 'function') setRating(2);" data-star="2"></i>
-            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" onclick="let s=this.parentNode.children; for(let i=0; i<s.length; i++) s[i].style.color = i < 3 ? '#ffca28' : '#ccc'; if(typeof setRating === 'function') setRating(3);" data-star="3"></i>
-            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" onclick="let s=this.parentNode.children; for(let i=0; i<s.length; i++) s[i].style.color = i < 4 ? '#ffca28' : '#ccc'; if(typeof setRating === 'function') setRating(4);" data-star="4"></i>
-            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" onclick="let s=this.parentNode.children; for(let i=0; i<s.length; i++) s[i].style.color = i < 5 ? '#ffca28' : '#ccc'; if(typeof setRating === 'function') setRating(5);" data-star="5"></i>
+            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" data-star="1"></i>
+            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" data-star="2"></i>
+            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" data-star="3"></i>
+            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" data-star="4"></i>
+            <i class="fas fa-star" style="font-size: 28px; color: #ccc; cursor: pointer; transition: color 0.2s;" data-star="5"></i>
         </div>
         <p id="rating-status" style="font-size: 12px; font-weight: 500; color: var(--accent); margin-bottom: 12px;">Tap to select stars</p>
-        <button class="modal-btn" style="width:100%" onclick="submitRating()">Submit Rating</button>
+        <button class="modal-btn" style="width:100%" id="submit-rating-btn">Submit Rating</button>
     </div>
 `;
                     break;
@@ -1610,9 +1675,9 @@
                                 <label>Text Reading Scale</label>
                                 <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Adjust text size inside unit dashboards and indexes.</p>
                                 <div class="setting-pills">
-                                    <button class="setting-pill ${selectedFontSize === 'small' ? 'active' : ''}" onclick="updateFontSize('small', this)">Small</button>
-                                    <button class="setting-pill ${selectedFontSize === 'medium' ? 'active' : ''}" onclick="updateFontSize('medium', this)">Normal</button>
-                                    <button class="setting-pill ${selectedFontSize === 'large' ? 'active' : ''}" onclick="updateFontSize('large', this)">Large</button>
+                                    <button class="setting-pill ${selectedFontSize === 'small' ? 'active' : ''}" data-size="small">Small</button>
+                                    <button class="setting-pill ${selectedFontSize === 'medium' ? 'active' : ''}" data-size="medium">Normal</button>
+                                    <button class="setting-pill ${selectedFontSize === 'large' ? 'active' : ''}" data-size="large">Large</button>
                                 </div>
                             </div>
                             <div style="border-top: 1px solid var(--border); padding-top: 12px;">
@@ -1644,32 +1709,35 @@
 
             contentArea.innerHTML = contentHTML;
             modal.classList.add('active');
+
+            // Add event listeners for modal content
+            if (type === 'rate') {
+                document.getElementById('submit-rating-btn').addEventListener('click', submitRating);
+            }
+            if (type === 'settings') {
+                document.querySelector('.setting-pills').addEventListener('click', (e) => {
+                    if (e.target.classList.contains('setting-pill')) {
+                        updateFontSize(e.target.dataset.size, e.target);
+                    }
+                });
+            }
         }
 
         function closeModal() {
             document.getElementById('custom-modal').classList.remove('active');
         }
 
-        function closeModalOnOuterClick(e) {
-            if (e.target.id === 'custom-modal') {
-                closeModal();
-            }
-        }
-
         // Modal Interactive Subsystems
         let currentRating = 0;
 
         function setRating(val) {
+            if (!val) return;
             currentRating = val;
             const stars = document.querySelectorAll('.rating-stars i');
             stars.forEach((star, index) => {
-                if (index < val) {
-                    star.classList.add('active');
-                } else {
-                    star.classList.remove('active');
-                }
+                star.style.color = index < val ? '#ffca28' : '#ccc';
             });
-
+            document.getElementById('rating-status').innerText = `You've selected ${val} star${val > 1 ? 's' : ''}.`;
         }
 
         function submitRating() {
