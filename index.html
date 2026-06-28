@@ -7,6 +7,7 @@
     <title>WBBSE 5-10 English App</title>
     
     <!-- Modern Icons & Premium Fonts -->
+    <link rel="icon" href="appicon.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1053,7 +1054,7 @@
                             <div class="class-book"><i class="fa-regular fa-bookmark"></i> Bliss</div>
                         </div>
                         <div class="class-footer">
-                            <span>9 Chapters</span>
+                            <span>8 Chapters</span>
                             <i class="fas fa-chevron-right"></i>
                         </div>
                     </div>
@@ -1615,14 +1616,18 @@
                     `;
                     break;
                 case 'about':
-                    contentHTML = `
+                   contentHTML = `
                         <div class="modal-title">
                             <i class="fas fa-info-circle"></i> About Us
                         </div>
                         <div class="modal-body">
+                            <!-- Circular profile image -->
+                            <img src="appicon.png" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto 15px auto; border: 2px solid #ddd;" />
+                            
                             <p style="margin-bottom: 12px;"><strong>WBBSE 5-10 English App</strong> is an educational platform crafted to assist students under the West Bengal Board of Secondary Education.</p>
                             <p style="margin-bottom: 12px;">This lightweight application maps textbook indexes and curriculum pathways accurately, allowing easy integration with digital learning modules and documents.</p>
                             <p>Our objective is to simplify study paths, providing modern reading layers and responsive chapter lookups.</p>
+                            <p>Developed By: <strong>Subhojati Dutta</strong></p>
                         </div>
                     `;
                     break;
