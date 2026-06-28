@@ -5,17 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WBBSE 5-10 English App</title>
-    
+
     <!-- Modern Icons & Premium Fonts -->
     <link rel="icon" href="appicon.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- Supabase JS Client library CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
     <style>
         /* Modern Color System & Global Variables */
         :root {
@@ -40,11 +42,11 @@
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
             --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            
+
             /* Sizing Scaling Utility */
             --font-scale: 1;
         }
-        
+
         /* Reset & Base Styles */
         * {
             box-sizing: border-box;
@@ -53,7 +55,7 @@
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         h1,
         h2,
         h3,
@@ -61,7 +63,7 @@
         .header span {
             font-family: 'Poppins', sans-serif;
         }
-        
+
         body {
             background-color: #0f172a;
             /* Outer dark backdrop for mock devices */
@@ -72,7 +74,7 @@
             min-height: 100vh;
             font-size: calc(16px * var(--font-scale));
         }
-        
+
         /* Standard App Frame (Perfect for both Mobile and Web Preview) */
         #app-container {
             width: 100%;
@@ -85,7 +87,7 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             border-radius: 0;
         }
-        
+
         @media (min-width: 481px) {
             #app-container {
                 border-radius: var(--radius-lg);
@@ -94,7 +96,7 @@
                 border: 6px solid #1e293b;
             }
         }
-        
+
         /* Screen Management with Transitions */
         .screen {
             position: absolute;
@@ -107,24 +109,24 @@
             background-color: var(--bg-base);
             z-index: 5;
         }
-        
+
         .screen.active {
             display: flex;
             animation: fadeInSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        
+
         @keyframes fadeInSlide {
             from {
                 opacity: 0;
                 transform: translateY(12px) scale(0.99);
             }
-            
+
             to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
         }
-        
+
         /* Dynamic & Modern Header */
         .header {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -139,7 +141,7 @@
             z-index: 10;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .header i {
             margin-right: 15px;
             cursor: pointer;
@@ -148,11 +150,11 @@
             border-radius: 50%;
             transition: var(--transition-smooth);
         }
-        
+
         .header i:active {
             background-color: rgba(255, 255, 255, 0.15);
         }
-        
+
         /* Content Area Container */
         .content {
             flex: 1;
@@ -160,24 +162,24 @@
             padding: 20px;
             -webkit-overflow-scrolling: touch;
         }
-        
+
         /* Custom Scrollbars */
         .content::-webkit-scrollbar {
             width: 5px;
         }
-        
+
         .content::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 10px;
         }
-        
+
         #pdf-screen .content {
             padding: 0;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
-        
+
         /* --- SCREEN 1: Modern Splash Screen --- */
         #splash-screen {
             background: radial-gradient(circle at top right, var(--primary-light), var(--primary-dark));
@@ -185,14 +187,14 @@
             align-items: center;
             color: white;
         }
-        
+
         .splash-logo-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             animation: pulse-logo 2s infinite ease-in-out;
         }
-        
+
         .splash-circle {
             width: 150px;
             height: 150px;
@@ -209,14 +211,14 @@
             box-shadow: var(--shadow-lg);
             animation: morph 8s infinite ease-in-out;
         }
-        
+
         .splash-circle i {
             font-size: 40px;
             margin-bottom: 10px;
             color: #5eead4;
             /* Teal accent */
         }
-        
+
         .splash-title {
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
@@ -225,7 +227,7 @@
             letter-spacing: 1px;
             text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         .splash-subtitle {
             margin-top: 5px;
             font-size: 13px;
@@ -233,7 +235,7 @@
             letter-spacing: 2px;
             opacity: 0.9;
         }
-        
+
         .splash-hint {
             position: absolute;
             bottom: 40px;
@@ -242,31 +244,31 @@
             letter-spacing: 3px;
             text-transform: uppercase;
         }
-        
+
         @keyframes morph {
-            
+
             0%,
             100% {
                 border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
             }
-            
+
             50% {
                 border-radius: 50% 50% 30% 70% / 50% 60% 40% 60%;
             }
         }
-        
+
         @keyframes pulse-logo {
-            
+
             0%,
             100% {
                 transform: scale(1);
             }
-            
+
             50% {
                 transform: scale(1.03);
             }
         }
-        
+
         /* --- Welcome Banner (Home) --- */
         .welcome-banner {
             background: linear-gradient(135deg, #1e293b, #0f172a);
@@ -278,7 +280,7 @@
             overflow: hidden;
             box-shadow: var(--shadow-md);
         }
-        
+
         .welcome-banner::after {
             content: '';
             position: absolute;
@@ -291,25 +293,25 @@
             opacity: 0.2;
             filter: blur(20px);
         }
-        
+
         .welcome-banner h3 {
             font-weight: 600;
             font-size: 18px;
             margin-bottom: 4px;
         }
-        
+
         .welcome-banner p {
             font-size: 12px;
             opacity: 0.8;
             line-height: 1.4;
         }
-        
+
         /* --- Search Feature UI --- */
         .search-container {
             position: relative;
             margin-bottom: 20px;
         }
-        
+
         .search-container input {
             width: 100%;
             padding: 12px 16px 12px 42px;
@@ -322,12 +324,12 @@
             transition: var(--transition-smooth);
             box-shadow: var(--shadow-sm);
         }
-        
+
         .search-container input:focus {
             border-color: var(--primary-light);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
         }
-        
+
         .search-container i {
             position: absolute;
             left: 15px;
@@ -336,14 +338,14 @@
             color: var(--text-muted);
             font-size: 15px;
         }
-        
+
         /* --- SCREEN 2: Home (PREMIUM Class Cards) --- */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 16px;
         }
-        
+
         .class-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -359,38 +361,38 @@
             overflow: hidden;
             min-height: 145px;
         }
-        
+
         /* Premium Accent Themes for Classes 5 to 10 */
         .class-card.c5 {
             --accent-clr: #059669;
             --accent-bg: #ecfdf5;
         }
-        
+
         .class-card.c6 {
             --accent-clr: #0284c7;
             --accent-bg: #f0f9ff;
         }
-        
+
         .class-card.c7 {
             --accent-clr: #4f46e5;
             --accent-bg: #e0e7ff;
         }
-        
+
         .class-card.c8 {
             --accent-clr: #7c3aed;
             --accent-bg: #f3e8ff;
         }
-        
+
         .class-card.c9 {
             --accent-clr: #e11d48;
             --accent-bg: #fff1f2;
         }
-        
+
         .class-card.c10 {
             --accent-clr: #0d9488;
             --accent-bg: #f0fdfa;
         }
-        
+
         .class-card::before {
             content: '';
             position: absolute;
@@ -402,24 +404,24 @@
             opacity: 0.8;
             transition: var(--transition-smooth);
         }
-        
+
         .class-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-lg);
             border-color: var(--accent-clr);
         }
-        
+
         .class-card:active {
             transform: translateY(-1px);
         }
-        
+
         .class-card-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 12px;
         }
-        
+
         .class-roman {
             font-size: 11px;
             font-weight: 700;
@@ -430,17 +432,17 @@
             letter-spacing: 0.5px;
             border: 1px solid rgba(0, 0, 0, 0.03);
         }
-        
+
         .class-book-icon {
             font-size: 15px;
             color: var(--accent-clr);
             opacity: 0.8;
         }
-        
+
         .class-details {
             margin-bottom: 14px;
         }
-        
+
         .class-name {
             font-family: 'Poppins', sans-serif;
             font-size: 16px;
@@ -448,7 +450,7 @@
             color: var(--text-main);
             line-height: 1.2;
         }
-        
+
         .class-book {
             font-size: 11px;
             color: var(--text-muted);
@@ -458,7 +460,7 @@
             align-items: center;
             gap: 4px;
         }
-        
+
         .class-footer {
             display: flex;
             align-items: center;
@@ -468,22 +470,22 @@
             font-size: 11px;
             color: var(--text-muted);
         }
-        
+
         .class-footer span {
             font-weight: 500;
         }
-        
+
         .class-footer i {
             font-size: 10px;
             color: var(--text-muted);
             transition: var(--transition-smooth);
         }
-        
+
         .class-card:hover .class-footer i {
             color: var(--accent-clr);
             transform: translateX(3px);
         }
-        
+
         /* --- SCREEN 3: Modern Chapter List --- */
         .chapter-list {
             list-style: none;
@@ -491,7 +493,7 @@
             flex-direction: column;
             gap: 12px;
         }
-        
+
         .chapter-list li {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -504,20 +506,20 @@
             transition: var(--transition-smooth);
             box-shadow: var(--shadow-sm);
         }
-        
+
         .chapter-list li:hover {
             border-color: var(--primary-light);
             transform: translateX(4px);
             box-shadow: var(--shadow-md);
         }
-        
+
         .chapter-left {
             display: flex;
             align-items: center;
             gap: 15px;
             flex: 1;
         }
-        
+
         .chapter-number {
             width: 36px;
             height: 36px;
@@ -531,25 +533,25 @@
             font-weight: 700;
             flex-shrink: 0;
         }
-        
+
         .chapter-title-text {
             font-size: 14px;
             font-weight: 500;
             color: var(--text-main);
             line-height: 1.4;
         }
-        
+
         .chapter-arrow {
             color: var(--text-muted);
             font-size: 12px;
             transition: var(--transition-smooth);
         }
-        
+
         .chapter-list li:hover .chapter-arrow {
             color: var(--primary);
             transform: translateX(2px);
         }
-        
+
         /* --- SCREEN 4: Local HTML Reader View (Pinch-to-Zoom Gestures Enabled) --- */
         #reader-container {
             width: 100%;
@@ -558,7 +560,7 @@
             background: #ffffff;
             position: relative;
         }
-        
+
         #reader-scroll-viewport {
             width: 100%;
             height: 100%;
@@ -566,14 +568,14 @@
             /* Becomes auto when zoomed */
             -webkit-overflow-scrolling: touch;
         }
-        
+
         #reader-zoom-wrapper {
             width: 100%;
             height: 100%;
             transform-origin: top left;
             transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        
+
         /* Iframes containing your separate HTML pages */
         .reader-iframe {
             width: 100%;
@@ -581,7 +583,7 @@
             border: none;
             background: transparent;
         }
-        
+
         .reader-placeholder {
             text-align: center;
             color: var(--text-muted);
@@ -592,7 +594,7 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .reader-placeholder i {
             font-size: 80px;
             color: #4f46e5;
@@ -600,31 +602,31 @@
             filter: drop-shadow(0 4px 6px rgba(79, 70, 229, 0.2));
             animation: bounce-icon 2s infinite ease-in-out;
         }
-        
+
         .reader-placeholder h2 {
             font-size: 20px;
             color: var(--text-main);
             margin-bottom: 8px;
         }
-        
+
         .reader-placeholder p {
             font-size: 14px;
             max-width: 280px;
             line-height: 1.5;
         }
-        
+
         @keyframes bounce-icon {
-            
+
             0%,
             100% {
                 transform: translateY(0);
             }
-            
+
             50% {
                 transform: translateY(-10px);
             }
         }
-        
+
         /* --- Hamburger Menu Sidebar (Modern Draw) --- */
         #sidebar {
             position: absolute;
@@ -642,25 +644,25 @@
             border-bottom-right-radius: var(--radius-lg);
             transform: translateX(0);
         }
-        
+
         #sidebar.open {
             transform: translateX(290px);
         }
-        
+
         .sidebar-header {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: white;
             padding: 40px 24px 24px 24px;
             position: relative;
         }
-        
+
         .sidebar-user {
             display: flex;
             align-items: center;
             gap: 12px;
             margin-bottom: 18px;
         }
-        
+
         .sidebar-avatar {
             width: 48px;
             height: 48px;
@@ -672,24 +674,24 @@
             font-size: 20px;
             border: 2px solid rgba(255, 255, 255, 0.25);
         }
-        
+
         .sidebar-header h2 {
             font-size: 18px;
             font-weight: 600;
             letter-spacing: -0.3px;
         }
-        
+
         .sidebar-header p {
             font-size: 12px;
             opacity: 0.8;
             margin-top: 2px;
         }
-        
+
         .sidebar-menu {
             list-style: none;
             padding: 15px 10px;
         }
-        
+
         .sidebar-menu li {
             padding: 14px 16px;
             color: var(--text-main);
@@ -702,24 +704,24 @@
             transition: var(--transition-smooth);
             margin-bottom: 4px;
         }
-        
+
         .sidebar-menu li:hover {
             background: #f1f5f9;
             color: var(--primary);
         }
-        
+
         .sidebar-menu li i {
             width: 28px;
             color: var(--text-muted);
             font-size: 16px;
             transition: var(--transition-smooth);
         }
-        
+
         .sidebar-menu li:hover i {
             color: var(--primary);
             transform: scale(1.1);
         }
-        
+
         #overlay {
             position: absolute;
             top: 0;
@@ -732,17 +734,17 @@
             display: none;
             animation: fadeOverlay 0.3s ease;
         }
-        
+
         @keyframes fadeOverlay {
             from {
                 opacity: 0;
             }
-            
+
             to {
                 opacity: 1;
             }
         }
-        
+
         /* --- Dynamic Modal Sheets --- */
         .modal-overlay {
             position: absolute;
@@ -758,12 +760,12 @@
             align-items: center;
             padding: 24px;
         }
-        
+
         .modal-overlay.active {
             display: flex;
             animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        
+
         .modal-card {
             background: var(--bg-card);
             border-radius: var(--radius-lg);
@@ -780,22 +782,22 @@
             gap: 16px;
             border: 1px solid var(--border);
         }
-        
+
         .modal-overlay.active .modal-card {
             transform: translateY(0) scale(1);
             opacity: 1;
         }
-        
+
         @keyframes modalFadeIn {
             from {
                 opacity: 0;
             }
-            
+
             to {
                 opacity: 1;
             }
         }
-        
+
         .modal-close-btn {
             position: absolute;
             top: 16px;
@@ -812,12 +814,12 @@
             justify-content: center;
             transition: var(--transition-smooth);
         }
-        
+
         .modal-close-btn:hover {
             background: #e2e8f0;
             color: var(--text-main);
         }
-        
+
         .modal-title {
             font-size: 18px;
             font-weight: 600;
@@ -827,11 +829,11 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .modal-title i {
             color: var(--primary);
         }
-        
+
         .modal-body {
             font-size: 13.5px;
             color: var(--text-muted);
@@ -839,7 +841,7 @@
             max-height: 400px;
             overflow-y: auto;
         }
-        
+
         /* Modal Forms & Interactive Inputs */
         .modal-form-group {
             display: flex;
@@ -847,7 +849,7 @@
             gap: 8px;
             width: 100%;
         }
-        
+
         .modal-form-group label {
             font-size: 12px;
             font-weight: 600;
@@ -855,7 +857,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .modal-input,
         .modal-textarea {
             width: 100%;
@@ -867,14 +869,14 @@
             outline: none;
             transition: var(--transition-smooth);
         }
-        
+
         .modal-input:focus,
         .modal-textarea:focus {
             border-color: var(--primary-light);
             background: #ffffff;
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
         }
-        
+
         .modal-btn {
             background: var(--primary);
             color: white;
@@ -890,11 +892,11 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .modal-btn:hover {
             background: var(--primary-dark);
         }
-        
+
         /* Sizing Setting Switches */
         .setting-pills {
             display: flex;
@@ -904,7 +906,7 @@
             gap: 4px;
             margin-top: 6px;
         }
-        
+
         .setting-pill {
             flex: 1;
             text-align: center;
@@ -918,7 +920,7 @@
             background: transparent;
             border: none;
         }
-        
+
         .setting-pill.active {
             background: white;
             color: var(--primary);
@@ -928,9 +930,9 @@
 </head>
 
 <body>
-    
+
     <div id="app-container">
-        
+
         <!-- Screen 1: Splash Screen -->
         <div id="splash-screen" class="screen active">
             <div class="splash-logo-container">
@@ -942,7 +944,7 @@
             </div>
             <div class="splash-hint">Class 5 to 10</div>
         </div>
-        
+
         <!-- Screen 2: Home (Class Selector) -->
         <div id="home-screen" class="screen">
             <div class="header">
@@ -955,13 +957,13 @@
                     <h3>Hello, Student! 👋</h3>
                     <p>Select your class below to access standard English study solutions and texts instantly.</p>
                 </div>
-                
+
                 <!-- Live Search Bar -->
                 <div class="search-container">
                     <i class="fas fa-search"></i>
                     <input type="text" id="class-search" placeholder="Search class..." onkeyup="filterClasses()">
                 </div>
-                
+
                 <div class="grid-container" id="class-grid">
                     <!-- Class 5 Card -->
                     <div class="class-card c5" data-class="Class 5" onclick="openClass('Class 5')">
@@ -978,7 +980,7 @@
                             <i class="fas fa-chevron-right"></i>
                         </div>
                     </div>
-                    
+
                     <!-- Class 6 Card -->
                     <div class="class-card c6" data-class="Class 6" onclick="openClass('Class 6')">
                         <div class="class-card-header">
@@ -994,7 +996,7 @@
                             <i class="fas fa-chevron-right"></i>
                         </div>
                     </div>
-                    
+
                     <!-- Class 7 Card -->
                     <div class="class-card c7" data-class="Class 7" onclick="openClass('Class 7')">
                         <div class="class-card-header">
@@ -1010,7 +1012,7 @@
                             <i class="fas fa-chevron-right"></i>
                         </div>
                     </div>
-                    
+
                     <!-- Class 8 Card -->
                     <div class="class-card c8" data-class="Class 8" onclick="openClass('Class 8')">
                         <div class="class-card-header">
@@ -1026,7 +1028,7 @@
                             <i class="fas fa-chevron-right"></i>
                         </div>
                     </div>
-                    
+
                     <!-- Class 9 Card -->
                     <div class="class-card c9" data-class="Class 9" onclick="openClass('Class 9')">
                         <div class="class-card-header">
@@ -1042,7 +1044,7 @@
                             <i class="fas fa-chevron-right"></i>
                         </div>
                     </div>
-                    
+
                     <!-- Class 10 Card -->
                     <div class="class-card c10" data-class="Class 10" onclick="openClass('Class 10')">
                         <div class="class-card-header">
@@ -1061,7 +1063,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Screen 3: Chapter List -->
         <div id="chapter-screen" class="screen">
             <div class="header">
@@ -1078,15 +1080,17 @@
                 <ul class="chapter-list" id="dynamic-chapter-list"></ul>
             </div>
         </div>
-        
+
         <!-- Screen 4: Local HTML Reader View -->
         <div id="pdf-screen" class="screen">
             <div class="header">
                 <!-- Links arrow to history sequence -->
                 <i class="fas fa-arrow-left" onclick="history.back()"></i>
-                <span id="chapter-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 75%;">1 CHAPTER NAME</span>
+                <span id="chapter-title"
+                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 75%;">1 CHAPTER
+                    NAME</span>
             </div>
-            
+
             <div class="content" style="position: relative;">
                 <div id="reader-container">
                     <div id="reader-scroll-viewport">
@@ -1095,10 +1099,10 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- App Overlays -->
         <div id="overlay" onclick="toggleMenu()"></div>
-        
+
         <!-- Navigation Drawer/Sidebar -->
         <div id="sidebar">
             <div class="sidebar-header">
@@ -1118,10 +1122,10 @@
                 <li onclick="openModal('rate')"><i class="fas fa-star"></i> Rate our app</li>
                 <li onclick="openModal('settings')"><i class="fas fa-cog"></i> Settings</li>
                 <li onclick="openModal('about')"><i class="fas fa-info-circle"></i> About us</li>
-                <li onclick="openModal('privacy')"><i class="fas fa-shield-alt"></i> Privacy policy</li>
+                <li onclick="openPrivacyPolicy()"><i class="fas fa-shield-alt"></i> Privacy policy</li>
             </ul>
         </div>
-        
+
         <!-- Dynamic Modal Base Component -->
         <div id="custom-modal" class="modal-overlay" onclick="closeModalOnOuterClick(event)">
             <div class="modal-card">
@@ -1129,30 +1133,30 @@
                 <div id="modal-content-area"></div>
             </div>
         </div>
-        
+
     </div>
-    
+
     <script>
         // --- DATABASE CONNECTION CONFIGURATION ---
         const SUPABASE_URL = "https://kochenhqnltibmgtwfwt.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvY2hlbmhxbmx0aWJtZ3R3Znd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzMyNTQsImV4cCI6MjA5ODE0OTI1NH0.xPyOYhrf1sab1plb8xosPz_3yuGtsCPc5Ny1Ii36Q2I";
-        
+
         let supabaseClient = null;
         if (typeof supabase !== 'undefined' && SUPABASE_URL !== "YOUR_SUPABASE_URL") {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
-        
+
         // --- 1. SPLASH SCREEN TIMEOUT WITH BASE INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', () => {
             // Replaces the starting layout item in history with 'home-screen' state. 
             // This prevents pressing back on home from navigating back to the splash screen.
             history.replaceState({ screen: 'home-screen', context: {} }, '', '');
-            
+
             setTimeout(() => {
                 navigateTo('home-screen', false);
             }, 2500);
         });
-        
+
         // --- 2. COMPLETE CLASS SYLLABUS DATA ---
         const syllabusData = {
             'Class 5': [
@@ -1218,7 +1222,7 @@
                 { isRevision: false, num: 13, title: 'The Man Who Planted Trees', html: 'chapters/class8/lesson13.html' }
             ],
             'Class 9': [
-                
+
                 { isRevision: false, num: 1, title: 'Tales of Bhola Grandpa — Manoj Das', html: 'chapters/class9/lesson1.html' },
                 { isRevision: false, num: 2, title: 'All about a Dog — A.G. Gardiner', html: 'chapters/class9/lesson2.html' },
                 { isRevision: false, num: 3, title: 'Autumn — John Clare', html: 'chapters/class9/lesson3.html' },
@@ -1234,7 +1238,7 @@
                 { isRevision: true, title: 'Reading Comprehension', html: 'chapters/class9/revision.html' },
             ],
             'Class 10': [
-    
+
                 { isRevision: false, num: 1, title: 'Father\'s Help (R. K. Narayan)', html: 'chapters/class10/lesson1.html' },
                 { isRevision: false, num: 2, title: 'Fable (Ralph Waldo Emerson)', html: 'chapters/class10/lesson2.html' },
                 { isRevision: false, num: 3, title: 'The Passing Away of Bapu (Nayantara Sehgal)', html: 'chapters/class10/lesson3.html' },
@@ -1245,31 +1249,31 @@
                 { isRevision: false, num: 8, title: 'The Snail (William Cowper)', html: 'chapters/class10/lesson8.html' }
             ]
         };
-        
+
         // Global Trackers
         let currentOpenClass = '';
         let selectedFontSize = 'medium';
         let currentZoom = 1.0;
-        
+
         // --- 3. DYNAMIC APP HISTORY NAVIGATION ROUTING ---
         function navigateTo(screenId, pushToHistory = true, context = {}) {
             const screens = document.querySelectorAll('.screen');
             screens.forEach(screen => screen.classList.remove('active'));
-            
+
             const targetScreen = document.getElementById(screenId);
             if (targetScreen) {
                 targetScreen.classList.add('active');
             }
-            
+
             // Handles view reconstruction from state data during back actions
             if (screenId === 'chapter-screen' && context.className) {
                 currentOpenClass = context.className;
                 document.getElementById('class-title').innerText = context.className.toUpperCase() + ' ENGLISH';
                 populateChapterList(context.className);
-            } else if (screenId === 'pdf-screen' && context.chapterData && context.badgeText) {
+            } else if (screenId === 'pdf-screen' && context.chapterData && context.hasOwnProperty('badgeText')) {
                 populateReaderView(context.badgeText, context.chapterData);
             }
-            
+
             // Clear searches during navigations
             if (screenId === 'home-screen') {
                 document.getElementById('class-search').value = '';
@@ -1279,13 +1283,13 @@
                 filterChapters();
             }
             closeMenu();
-            
+
             // Store history states
             if (pushToHistory) {
                 history.pushState({ screen: screenId, context: context }, '', '');
             }
         }
-        
+
         // Native physical system back gesture handling mapping
         window.addEventListener('popstate', (event) => {
             if (event.state && event.state.screen) {
@@ -1294,24 +1298,24 @@
                 navigateTo('home-screen', false);
             }
         });
-        
+
         // --- 4. LIST GENERATION INTERFACES ---
         function openClass(className) {
             navigateTo('chapter-screen', true, { className: className });
         }
-        
+
         function populateChapterList(className) {
             const chapterListUl = document.getElementById('dynamic-chapter-list');
             chapterListUl.innerHTML = '';
-            
+
             const chapters = syllabusData[className] || [];
-            
+
             chapters.forEach((chapterData) => {
                 const li = document.createElement('li');
                 const badgeText = chapterData.isRevision ? 'R' : chapterData.num;
-                
+
                 li.onclick = () => openChapter(badgeText, chapterData);
-                
+
                 li.innerHTML = `
                     <div class="chapter-left">
                         <div class="chapter-number">${badgeText}</div> 
@@ -1319,25 +1323,25 @@
                     </div>
                     <i class="fas fa-chevron-right chapter-arrow"></i>
                 `;
-                
+
                 chapterListUl.appendChild(li);
             });
         }
-        
+
         // --- 5. INTERACTIVE LOCAL HTML LOADING & ZOOM ---
         function openChapter(badgeText, chapterData) {
             navigateTo('pdf-screen', true, { badgeText: badgeText, chapterData: chapterData });
         }
-        
+
         function populateReaderView(badgeText, chapterData) {
-            const headingPrefix = (badgeText === 'R') ? 'Revision Lesson' : `Lesson ${badgeText}`;
-            document.getElementById('chapter-title').innerText = `${headingPrefix}: ${chapterData.title}`;
-            
+            const headingPrefix = (badgeText === 'R') ? 'Revision Lesson' : (badgeText ? `Lesson ${badgeText}` : '');
+            document.getElementById('chapter-title').innerText = headingPrefix ? `${headingPrefix}: ${chapterData.title}` : chapterData.title;
+
             const zoomWrapper = document.getElementById('reader-zoom-wrapper');
-            
+
             // Clear zoom status back to 1.0 default
             resetZoomState();
-            
+
             if (chapterData.html && chapterData.html.trim() !== '') {
                 // Instantiates a native safe relative iframe object
                 zoomWrapper.innerHTML = `
@@ -1348,7 +1352,7 @@
                         allow="autoplay">
                     </iframe>
                 `;
-                
+
                 // Mount internal touch listeners inside the iframe
                 const iframe = document.getElementById('reader-frame');
                 initIframeZoom(iframe);
@@ -1362,15 +1366,15 @@
                 `;
             }
         }
-        
+
         // --- 5a. SYSTEM TO CAPTURE GESTURES INSIDE SAME-ORIGIN FRAMES ---
         function initIframeZoom(iframeElement) {
-            iframeElement.onload = function() {
+            iframeElement.onload = function () {
                 try {
                     // Grab document flow inside our same-origin relative chapter file
                     const doc = iframeElement.contentDocument || iframeElement.contentWindow.document;
                     if (!doc) return;
-                    
+
                     let initialDistance = 0;
                     let initialZoom = 1.0;
                     let isPanning = false;
@@ -1378,9 +1382,9 @@
                     let startY = 0;
                     let scrollLeftStart = 0;
                     let scrollTopStart = 0;
-                    
+
                     // Touch gestures for mobile screens
-                    doc.addEventListener('touchstart', function(e) {
+                    doc.addEventListener('touchstart', function (e) {
                         if (e.touches.length === 2) {
                             // Two-finger pinch detected
                             initialDistance = Math.hypot(
@@ -1398,17 +1402,17 @@
                             scrollTopStart = viewport.scrollTop;
                         }
                     }, { passive: false });
-                    
-                    doc.addEventListener('touchmove', function(e) {
+
+                    doc.addEventListener('touchmove', function (e) {
                         if (e.touches.length === 2) {
                             e.preventDefault(); // Stop entire outer page scaling
-                            
+
                             const newDistance = Math.hypot(
                                 e.touches[0].clientX - e.touches[1].clientX,
                                 e.touches[0].clientY - e.touches[1].clientY
                             );
                             const factor = newDistance / initialDistance;
-                            
+
                             currentZoom = Math.max(1.0, Math.min(3.0, initialZoom * factor));
                             applyPinchZoom(currentZoom);
                         } else if (e.touches.length === 1 && isPanning && currentZoom > 1.0) {
@@ -1420,8 +1424,8 @@
                             viewport.scrollTop = scrollTopStart - dy;
                         }
                     }, { passive: false });
-                    
-                    doc.addEventListener('touchend', function(e) {
+
+                    doc.addEventListener('touchend', function (e) {
                         if (e.touches.length < 2) {
                             initialDistance = 0;
                         }
@@ -1429,9 +1433,9 @@
                             isPanning = false;
                         }
                     }, { passive: false });
-                    
+
                     // Laptop/Desktop trackpad pinching support (Ctrl + Scroll Wheel)
-                    doc.addEventListener('wheel', function(e) {
+                    doc.addEventListener('wheel', function (e) {
                         if (e.ctrlKey) {
                             e.preventDefault();
                             const zoomFactor = 0.05;
@@ -1440,19 +1444,19 @@
                             applyPinchZoom(currentZoom);
                         }
                     }, { passive: false });
-                    
+
                 } catch (err) {
                     console.error("Local same-origin configuration error:", err);
                 }
             };
         }
-        
+
         // Resets document scaling dimensions back to raw state
         function resetZoomState() {
             currentZoom = 1.0;
             const wrapper = document.getElementById('reader-zoom-wrapper');
             const viewport = document.getElementById('reader-scroll-viewport');
-            
+
             if (wrapper) {
                 wrapper.style.transform = `scale(1)`;
                 wrapper.style.width = '100%';
@@ -1466,14 +1470,14 @@
                 viewport.scrollTop = 0;
             }
         }
-        
+
         // Programmatic CSS layout scaling. Creates comfortable scroll space dynamically.
         function applyPinchZoom(zoom) {
             const wrapper = document.getElementById('reader-zoom-wrapper');
             const viewport = document.getElementById('reader-scroll-viewport');
-            
+
             wrapper.style.transform = `scale(${zoom})`;
-            
+
             if (zoom > 1.0) {
                 // Margin buffers extend the virtual canvas to accommodate high zoom depths beautifully
                 wrapper.style.width = '100%';
@@ -1491,7 +1495,7 @@
                 viewport.scrollTop = 0;
             }
         }
-        
+
         // --- 6. SIDEBAR DRAWER CONTROLS ---
         function toggleMenu() {
             const sidebar = document.getElementById('sidebar');
@@ -1504,17 +1508,17 @@
                 overlay.style.display = 'block';
             }
         }
-        
+
         function closeMenu() {
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('overlay').style.display = 'none';
         }
-        
+
         // --- 7. LIVE INTERACTIVE SEARCH FILTERS ---
         function filterClasses() {
             const query = document.getElementById('class-search').value.toLowerCase();
             const cards = document.querySelectorAll('.class-card');
-            
+
             cards.forEach(card => {
                 const className = card.getAttribute('data-class').toLowerCase();
                 if (className.includes(query)) {
@@ -1524,11 +1528,11 @@
                 }
             });
         }
-        
+
         function filterChapters() {
             const query = document.getElementById('chapter-search').value.toLowerCase();
             const items = document.querySelectorAll('#dynamic-chapter-list li');
-            
+
             items.forEach(item => {
                 const titleText = item.querySelector('.chapter-title-text').innerText.toLowerCase();
                 if (titleText.includes(query)) {
@@ -1538,14 +1542,19 @@
                 }
             });
         }
-        
+
         // --- 8. DYNAMIC SIDEMENU ACTIONS & MODALS ---
+        function openPrivacyPolicy() {
+            closeMenu();
+            openChapter('', { title: 'Privacy Policy', html: 'privacy.html' });
+        }
+
         function openModal(type) {
             closeMenu();
             const modal = document.getElementById('custom-modal');
             const contentArea = document.getElementById('modal-content-area');
             let contentHTML = '';
-            
+
             switch (type) {
                 case 'feedback':
                     contentHTML = `
@@ -1616,7 +1625,7 @@
                     `;
                     break;
                 case 'about':
-                   contentHTML = `
+                    contentHTML = `
                         <div class="modal-title">
                             <i class="fas fa-info-circle"></i> About Us
                         </div>
@@ -1631,38 +1640,25 @@
                         </div>
                     `;
                     break;
-                case 'privacy':
-                    contentHTML = `
-                        <div class="modal-title">
-                            <i class="fas fa-shield-alt"></i> Privacy Policy
-                        </div>
-                        <div class="modal-body" style="font-size: 12.5px;">
-                            <p style="margin-bottom: 10px;"><strong>Last Updated: June 2026</strong></p>
-                            <p style="margin-bottom: 10px;">We take your data security seriously. This application does not gather, store, or sell personal student files or identifiable tracking metrics.</p>
-                            <p style="margin-bottom: 10px;">Any external textbook solutions or reference sheets are served as direct web interfaces via Google Drive previews or public endpoints, subject to normal network safety structures.</p>
-                            <p>All core settings, search terms, and class progression records are processed locally on your terminal device.</p>
-                        </div>
-                    `;
-                    break;
             }
-            
+
             contentArea.innerHTML = contentHTML;
             modal.classList.add('active');
         }
-        
+
         function closeModal() {
             document.getElementById('custom-modal').classList.remove('active');
         }
-        
+
         function closeModalOnOuterClick(e) {
             if (e.target.id === 'custom-modal') {
                 closeModal();
             }
         }
-        
+
         // Modal Interactive Subsystems
         let currentRating = 0;
-        
+
         function setRating(val) {
             currentRating = val;
             const stars = document.querySelectorAll('.rating-stars i');
@@ -1673,9 +1669,9 @@
                     star.classList.remove('active');
                 }
             });
-            
+
         }
-        
+
         function submitRating() {
             if (currentRating === 0) {
                 const status = document.getElementById('rating-status');
@@ -1693,13 +1689,13 @@
             `;
             setTimeout(closeModal, 2000);
         }
-        
+
         async function submitFeedback() {
             const name = document.getElementById('fb-name').value;
             const email = document.getElementById('fb-email').value;
             const text = document.getElementById('fb-text').value;
             const submitBtn = document.getElementById('fb-submit-btn');
-            
+
             if (!name.trim()) {
                 alert('Please enter your name.');
                 return;
@@ -1708,15 +1704,15 @@
                 alert('Please enter your feedback message.');
                 return;
             }
-            
+
             // Show loading state
             if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.innerText = 'Sending...';
             }
-            
+
             let success = true;
-            
+
             // Inserts row into database if the Supabase client is initialized
             if (supabaseClient) {
                 try {
@@ -1725,7 +1721,7 @@
                         .insert([
                             { name: name.trim(), email: email.trim(), message: text.trim() }
                         ]);
-                    
+
                     if (error) {
                         console.error('Supabase write error:', error);
                         alert('Could not record feedback: ' + error.message);
@@ -1739,7 +1735,7 @@
             } else {
                 console.warn('Supabase database client is not configured. Feedbacks are not being recorded.');
             }
-            
+
             if (success) {
                 const body = document.getElementById('feedback-body');
                 body.innerHTML = `
@@ -1758,13 +1754,13 @@
                 }
             }
         }
-        
+
         function updateFontSize(size, btnElement) {
             selectedFontSize = size;
             const pills = document.querySelectorAll('.setting-pill');
             pills.forEach(pill => pill.classList.remove('active'));
             btnElement.classList.add('active');
-            
+
             const root = document.documentElement;
             if (size === 'small') {
                 root.style.setProperty('--font-scale', '0.9');
